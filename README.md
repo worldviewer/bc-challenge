@@ -1,68 +1,77 @@
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+# Challenge
 
-## Available Scripts
+## Part 1: The Data Structure
 
-In the project directory, you can run:
+Requirements:
 
-### `npm start`
+1. each family member can have zero or more children
+2. each family member can have an indefinite number of properties, e.g. name, gender, favorite color, etc.
+3. there should not be a limit on the depth of the family tree
 
-Runs the app in the development mode.<br>
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+### The n-ary Approach
 
-The page will reload if you make edits.<br>
-You will also see any lint errors in the console.
+A common solution is the n-ary tree, which is a binary tree w a variable number of children.  In this case, I would separate out the node's properties and children into two separate arrays.
 
-### `npm test`
+A typical Node would basically look like:
 
-Launches the test runner in the interactive watch mode.<br>
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+```
+class Node {
+    constructor(properties = []) {
+        this.properties = properties;
+        this.children = [];
+    }
 
-### `npm run build`
+    // properties would be an array of key-value pairs (objects)
+    // e.g. [{'favorite color': 'red'}, {gender: 'male'}]
 
-Builds the app for production to the `build` folder.<br>
-It correctly bundles React in production mode and optimizes the build for the best performance.
+    // children would be an array of other Nodes
+    // e.g. [node1, node2, node3]
+}
+```
 
-The build is minified and the filenames include the hashes.<br>
-Your app is ready to be deployed!
+Right away, the third requirement is an important consideration, since our structure could easily become sufficiently large that for performance reasons, we might eventually choose to only render a section of the tree at a time.
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+Another important - and related - consideration is the time it takes to navigate this structure.  Ideally, we should have an ability to navigate both up *and down* the tree hierarchy.  And that raises the question of whether or not we should supply back-links from the children up to their parent.
 
-### `npm run eject`
+### The Bi-directional n-ary Tree Approach
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+```
+class Node {
+    constructor(properties = []) {
+        this.parent = null;
+        this.properties = properties;
+        this.children = [];
+    }
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+    // properties would be an array of key-value pairs (objects)
+    // e.g. [{'favorite color': 'red'}, {gender: 'male'}]
 
-Instead, it will copy all the configuration files and the transitive dependencies (Webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+    // children would be an array of other Nodes
+    // e.g. [node1, node2, node3]
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+    // parent would be a single Node
+}
+```
 
-## Learn More
+### The Array Approach
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+It is, in theory, possible to implement the entire structure as just an array, which could provide a performance advantage for accesses since the structure would then exist in a contiguous section of memory.  However, the fact that we need to be able to add and remove items creates serious questions about how long those changes would take for the data structure if it was large, since each change would necessarily involve a worse case scenario of O(n)-time operation for shifting the values in the array.
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+The advantage of the tree-based approach is that changes are much faster.  Also, the data structure is actually easier to conceptualize as a tree.
 
-### Code Splitting
+### The First Child / Next Sibling n-ary Structure
 
-This section has moved here: https://facebook.github.io/create-react-app/docs/code-splitting
+There is another possible implementation where the parent only stores a reference to one of the children (the "first"), and then the other children are then accessible as siblings of that child.  In this case, the parent node would have be identifiable as not having any siblings.
 
-### Analyzing the Bundle Size
+A person might argue that this reduces the size of our total data structure, but it seems to come at a performance cost: The problem with this approach is that it introduces an O(m) latency for traversing up our family tree, compared with the bi-directional n-ary tree approach.  In other words, if we have m siblings for a particular parent, then the only way to get to the parent from one of those siblings involves following some sort of backlinks, with a worst-case scenario of m jumps.
 
-This section has moved here: https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size
+In a typical application, the navigation and render problems are going to represent critical paths.  In most applications, the small adantage provided by this smaller data structure are probably not going to make a huge difference for our application.
 
-### Making a Progressive Web App
+### Conclusion
 
-This section has moved here: https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app
+I would personally go with the bi-directional n-ary tree approach, since it provides us with the best flexibility to optimize for performance in the event that we later decide that we need to display just a small portion of our graph.  To do that, we would need to be able to move up and down the hierarchy without having to start at the top each time.
 
-### Advanced Configuration
+## Part 2: Render the Family Tree
 
-This section has moved here: https://facebook.github.io/create-react-app/docs/advanced-configuration
+## Part 3: Implement UI to Add and Remove Tree Members
 
-### Deployment
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/deployment
-
-### `npm run build` fails to minify
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify
