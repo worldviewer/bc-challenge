@@ -1,26 +1,30 @@
 import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import TreeRootNode from './TreeRootNode';
+import Node from './Node';
+import { grandfatherProps,
+	fatherProps,
+	brotherProps,
+	sisterProps,
+	childProps } from './PropertiesData';
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+	const appStyles = {
+		padding: '50px'
+	};
+
+	return (
+		<div style={appStyles}>
+			<TreeRootNode properties={grandfatherProps} >
+				<Node properties={fatherProps}>
+					<Node properties={brotherProps} />
+
+					<Node properties={sisterProps}>
+						<Node properties={childProps} />
+					</Node>
+				</Node>
+			</TreeRootNode>
+		</div>
+	);
 }
 
 export default App;

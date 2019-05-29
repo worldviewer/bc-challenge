@@ -10,7 +10,7 @@ Requirements:
 
 ### The n-ary Approach
 
-A common solution is the n-ary tree, which is a binary tree w a variable number of children.  In this case, I would separate out the node's properties and children into two separate arrays.
+A common solution is the n-ary tree, which is a binary tree w a variable number of children.  In this case, I would separate out the node's properties and children into two separate parts of the data structure.
 
 A typical Node would basically look like:
 
@@ -21,8 +21,8 @@ class Node {
         this.children = [];
     }
 
-    // properties would be an array of key-value pairs (objects)
-    // e.g. [{'favorite color': 'red'}, {gender: 'male'}]
+    // properties would be a hash of key-value pairs (objects)
+    // e.g. {'favorite color': 'red', gender: 'male'}
 
     // children would be an array of other Nodes
     // e.g. [node1, node2, node3]
@@ -43,8 +43,8 @@ class Node {
         this.children = [];
     }
 
-    // properties would be an array of key-value pairs (objects)
-    // e.g. [{'favorite color': 'red'}, {gender: 'male'}]
+    // properties would be a hash of key-value pairs (objects)
+    // e.g. {'favorite color': 'red', gender: 'male'}
 
     // children would be an array of other Nodes
     // e.g. [node1, node2, node3]
@@ -73,5 +73,8 @@ I would personally go with the bi-directional n-ary tree approach, since it prov
 
 ## Part 2: Render the Family Tree
 
+I've set this up in a React sort of manner.  I'm dynamically adding a parent prop to each child node using the `useRef` hook.  I print the props out on node render, so you can inspect the parent prop.  I expect that having this reference could be potentially useful.
+
 ## Part 3: Implement UI to Add and Remove Tree Members
 
+I ran out of time, did not make it to this part.
