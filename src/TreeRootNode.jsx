@@ -26,9 +26,7 @@ class TreeRootNode extends Component {
 						<h3>Children:</h3>
 						<ul>
 							{ React.Children.map(this.props.children, (child, index) =>
-								<li key={`${nodeProperties.name}-${index}`}>
-									{ child }
-								</li>) }
+								<li key={index}>{child}</li>) }
 						</ul>
 					</div> }
 			</div>
